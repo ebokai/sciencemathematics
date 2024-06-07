@@ -68,8 +68,8 @@ ax.set_aspect('equal')
 
 # Number of lines and parts
 n_lines = 500  # Number of lines to draw
-n_parts = 1    # Number of parts in the transformation
-n_z = 1        # Number of initial complex numbers
+n_parts = 2    # Number of parts in the transformation
+n_z = 2        # Number of initial complex numbers
 
 # Generate random parameters for the transformation functions
 orders = np.random.randint(1, 4, n_parts)  # Polynomial orders for the transformation
