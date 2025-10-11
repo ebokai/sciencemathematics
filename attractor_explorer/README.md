@@ -100,13 +100,3 @@ This project is open-source and available under the MIT License.
 
 ---
 
-## Author
-
-Developed by [Your Name]
-Interactive exploration of 2D quadratic maps with entropy and Fourier analysis.
-
-```
-
-I can also create a **shorter, ultra-succinct version** optimized for GitHub if you want something more visual and less verbose. Do you want me to do that?
-```
-
