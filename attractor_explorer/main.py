@@ -46,13 +46,11 @@ def draw_slider(value, slider_id, active_slider_id):
     value_text = font.render(f"{value:.3f}", True, (230, 230, 230))
     surface_left.blit(value_text, (XRES - YRES - 70, y + 4))
 
-
-
 # Function to clear the right surface and draw the new attractor
 def clear_and_draw(parameters):
 
 	surface_right.fill(SURFACE_RIGHT_BG)
-	normalized_x, normalized_y = generate_and_normalize(parameters)
+	normalized_x, normalized_y = att_exp_functions.generate_and_normalize(parameters)
 
 	# Draw points representing the attractor (skip transient iterations)
 	for x,y in zip(normalized_x[TRANSIENT:], normalized_y[TRANSIENT:]):
@@ -61,28 +59,6 @@ def clear_and_draw(parameters):
 	# Return entropy and Fourier transform of attractor
 	return att_exp_functions.compute_grid_stats(normalized_x, normalized_y)
 
-
-def generate_and_normalize(parameters):
-	# Generate iterates of the system given current parameters
-	x_iterates, y_iterates = att_exp_iterator_naive.generate_iterates(MAX_ITS, parameters)
-
-	# Normalize coordinates to fit in the plotting area
-	normalized_x = att_exp_functions.normalize(x_iterates)
-	normalized_y = att_exp_functions.normalize(y_iterates)
-
-	return normalized_x, normalized_y
-
-def find_attractor():
-	rasterization_entropy = 0
-	while rasterization_entropy < 3:
-		parameters = np.random.uniform(-1,1,12)
-		x_iterates, y_iterates = att_exp_iterator_naive.generate_iterates(MAX_ITS, parameters)
-		if len(x_iterates) < MAX_ITS:
-			continue
-		normalized_x = att_exp_functions.normalize(x_iterates)
-		normalized_y = att_exp_functions.normalize(y_iterates)
-		rasterization_entropy, _ = att_exp_functions.compute_grid_stats(normalized_x, normalized_y, compute_ft = False)
-	return parameters
 
 
 # --- Pygame setup ---
@@ -141,11 +117,9 @@ while True:
 			# Generate a new random attractor (until it doesn't diverge)
 			if event.key == pygame.K_r:
 				surface_right.fill(SURFACE_RIGHT_BG)
-				parameters = find_attractor()
+				parameters = att_exp_functions.find_attractor()
 				rasterization_entropy, fourier_transform_data = clear_and_draw(parameters)
 				parameter_change = True
-
-
 
 	# Fine-tune active parameter with arrow keys
 	keys = pygame.key.get_pressed()
@@ -155,7 +129,6 @@ while True:
 		rasterization_entropy, fourier_transform_data = clear_and_draw(parameters)
 		parameter_change = True
 		
-
 
 	# --- UI text instructions ---
 	message = 'PRESS R TO FIND NEW ATTRACTOR'

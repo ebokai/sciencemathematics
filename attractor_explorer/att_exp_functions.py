@@ -1,5 +1,7 @@
 import numpy as np 
+import att_exp_iterator_naive
 from att_exp_params import *
+
 
 def normalize(x, low = 0.2, high = 0.8):
 
@@ -49,6 +51,28 @@ def compute_grid_stats(Fx, Fy, grid_size=20, compute_ft=True):
         ft_a = np.abs(ft.flatten())
     
     return entropy, ft_a
+
+def generate_and_normalize(parameters):
+    # Generate iterates of the system given current parameters
+    x_iterates, y_iterates = att_exp_iterator_naive.generate_iterates(MAX_ITS, parameters)
+
+    # Normalize coordinates to fit in the plotting area
+    normalized_x = normalize(x_iterates)
+    normalized_y = normalize(y_iterates)
+
+    return normalized_x, normalized_y
+
+def find_attractor():
+    rasterization_entropy = 0
+    while rasterization_entropy < 3:
+        parameters = np.random.uniform(-1,1,12)
+        x_iterates, y_iterates = att_exp_iterator_naive.generate_iterates(MAX_ITS, parameters)
+        if len(x_iterates) < MAX_ITS:
+            continue
+        normalized_x = normalize(x_iterates)
+        normalized_y = normalize(y_iterates)
+        rasterization_entropy, _ = compute_grid_stats(normalized_x, normalized_y, compute_ft = False)
+    return parameters
 
 
 def intersect_slider(pos, pars, active_par):
