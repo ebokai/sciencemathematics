@@ -35,11 +35,12 @@ Where `pars = [a0, a1, a2, a3, a4, a5, b0, b1, b2, b3, b4, b5]` are the 12 adjus
 - Python 3.10+  
 - Pygame  
 - NumPy
+- Numba
 
 Install dependencies via pip:
 
 ```bash
-pip install pygame numpy
+pip install pygame numpy numba
 ````
 
 ---
@@ -49,7 +50,7 @@ pip install pygame numpy
 1. Run the script:
 
 ```bash
-python iterated_map_explorer.py
+python main.py
 ```
 
 2. Controls:
@@ -65,19 +66,6 @@ python iterated_map_explorer.py
 
 ---
 
-## Functions Overview
-
-* `f(x, y, pars)` – Computes the next iterate of the map.
-* `generate_iterates(max_its, pars)` – Generates orbit points up to a max number of iterations.
-* `normalize(x, low=0.2, high=0.8)` – Normalizes values to a given range.
-* `detect(Fx, Fy)` – Computes rasterization entropy of the orbit.
-* `fourier_grid(Fx, Fy)` – Computes the Fourier spectrum of the orbit's grid.
-* `draw_slider(par, k, active_par)` – Draws sliders for the GUI.
-* `intersect_slider(pos, pars, active_par)` – Updates parameters based on mouse clicks.
-* `clear_and_draw(pars)` – Clears the visualization and redraws with updated parameters.
-
----
-
 ## Visualization Details
 
 * **Entropy** measures the uniformity of points in a 10x10 grid.
@@ -90,7 +78,7 @@ python iterated_map_explorer.py
 
 * Initial conditions are fixed at `(x, y) = (0, 0)`.
 * Transient iterations (`TRANSIENT = 100`) are ignored to avoid initial transients affecting measurements.
-* Maximum iterations per orbit: `MAX_ITS = 2500`.
+* Maximum iterations per orbit: `MAX_ITS = 35000`.
 
 ---
 
