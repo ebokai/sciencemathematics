@@ -1,5 +1,5 @@
 import numpy as np
-from numba import njit
+from numba import njit, prange
 
 @njit
 def f(x, y, pars):
@@ -24,3 +24,4 @@ def generate_iterates(max_its, pars):
             # truncate output if escape condition reached
             return Fx[:i], Fy[:i]
     return Fx, Fy
+
