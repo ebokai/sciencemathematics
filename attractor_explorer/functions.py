@@ -1,6 +1,6 @@
 import numpy as np 
-import att_exp_iterator_naive
-from att_exp_params import *
+import iterator_naive
+from config_vars import *
 
 
 def normalize(x, low = 0.2, high = 0.8):
@@ -54,7 +54,7 @@ def compute_grid_stats(Fx, Fy, grid_size=20, compute_ft=True):
 
 def generate_and_normalize(parameters):
     # Generate iterates of the system given current parameters
-    x_iterates, y_iterates = att_exp_iterator_naive.generate_iterates(MAX_ITS, parameters)
+    x_iterates, y_iterates = iterator_naive.generate_iterates(MAX_ITS, parameters)
 
     # Normalize coordinates to fit in the plotting area
     normalized_x = normalize(x_iterates)
@@ -66,7 +66,7 @@ def find_attractor():
     rasterization_entropy = 0
     while rasterization_entropy < 3:
         parameters = np.random.uniform(-1,1,12)
-        x_iterates, y_iterates = att_exp_iterator_naive.generate_iterates(MAX_ITS, parameters)
+        x_iterates, y_iterates = iterator_naive.generate_iterates(MAX_ITS, parameters)
         if len(x_iterates) < MAX_ITS:
             continue
         normalized_x = normalize(x_iterates)
@@ -75,21 +75,3 @@ def find_attractor():
     return parameters
 
 
-def intersect_slider(pos, pars, active_par):
-	
-	xmin = 32 
-	xmax = xmin + SLIDER_WIDTH
-	ymin = 160
-	ymax = 160 + 12 * 32
-	x, y = pos 
-
-	is_click = False
-
-	if x > xmin and x < xmax and y > ymin and y < ymax:
-		k = int((y - ymin)/(ymax - ymin) * 12)
-		active_par = k
-		new_par = -1 + 2 * (x - xmin)/(xmax - xmin)
-		pars[k] = new_par
-		is_click = True
-
-	return is_click, pars, active_par

@@ -1,63 +1,26 @@
 import pygame
 import numpy as np 
 
-import att_exp_functions
-import att_exp_iterator_naive
-from att_exp_params import *
+import functions 
+import slider 
+import iterator_naive
+from config_vars import *
 
 
-# Function to draw a single parameter slider_id (both background and value)
-def draw_slider(value, slider_id, active_slider_id):
-    # Parameter names
-    labels = ['a','x','y','x²','xy','y²','b','x','y','x²','xy','y²']
-    
-    # Geometry
-    x = 32
-    y = 160 + slider_id * 36  # slightly more spacing
-    w = SLIDER_WIDTH
-    h = 28
-    mid_x = XMID
-    
-    # Background bar
-    bg_color = (40, 40, 40)
-    pygame.draw.rect(surface_left, bg_color, (x, y, w, h), border_radius=6)
-    
-    # Active highlight glow
-    if slider_id == active_slider_id:
-        glow_color = (80, 180, 80)
-        pygame.draw.rect(surface_left, glow_color, (x-2, y-2, w+4, h+4), border_radius=8)
-    
-    # Fill based on value
-    fill_w = int(abs(value) * w/2)
-    if value >= 0:
-        fill_color = (50, 150, 255)
-        fill_rect = (mid_x, y, fill_w, h)
-    else:
-        fill_color = (255, 80, 80)
-        fill_rect = (mid_x + value * w/2, y, fill_w, h)
-    
-    pygame.draw.rect(surface_left, fill_color, fill_rect, border_radius=6)
-    
-    # Draw the label (parameter symbol) on left
-    label_text = font.render(labels[slider_id], True, (230, 230, 230))
-    surface_left.blit(label_text, (x + 4, y + 4))
-    
-    # Draw the numeric value on right
-    value_text = font.render(f"{value:.3f}", True, (230, 230, 230))
-    surface_left.blit(value_text, (XRES - YRES - 70, y + 4))
+
 
 # Function to clear the right surface and draw the new attractor
 def clear_and_draw(parameters):
 
 	surface_right.fill(SURFACE_RIGHT_BG)
-	normalized_x, normalized_y = att_exp_functions.generate_and_normalize(parameters)
+	normalized_x, normalized_y = functions.generate_and_normalize(parameters)
 
 	# Draw points representing the attractor (skip transient iterations)
 	for x,y in zip(normalized_x[TRANSIENT:], normalized_y[TRANSIENT:]):
 		surface_right.set_at((int(YRES*x), int(YRES*y)), PIXEL_COLOR)
 
 	# Return entropy and Fourier transform of attractor
-	return att_exp_functions.compute_grid_stats(normalized_x, normalized_y)
+	return functions.compute_grid_stats(normalized_x, normalized_y)
 
 
 
@@ -66,7 +29,7 @@ pygame.init()
 screen = pygame.display.set_mode((XRES, YRES))
 pygame.display.set_caption('Iterated map explorer')
 clock = pygame.time.Clock()
-font = pygame.font.SysFont('Arial', 18)
+
 
 # Two surfaces: left (controls) and right (visualization)
 surface_left = pygame.Surface((XRES-YRES, YRES), pygame.SRCALPHA)
@@ -99,7 +62,7 @@ while True:
 		# Handle mouse clicks (for slider_id adjustment)
 		elif event.type == pygame.MOUSEBUTTONDOWN:
 			mouse_position = pygame.mouse.get_pos()
-			click, parameters, active_slider_id = att_exp_functions.intersect_slider(mouse_position, parameters, active_slider_id)
+			click, parameters, active_slider_id = slider.intersect_slider(mouse_position, parameters, active_slider_id)
 			if click:
 				rasterization_entropy, fourier_transform_data = clear_and_draw(parameters)
 				parameter_change = True
@@ -117,7 +80,7 @@ while True:
 			# Generate a new random attractor (until it doesn't diverge)
 			if event.key == pygame.K_r:
 				surface_right.fill(SURFACE_RIGHT_BG)
-				parameters = att_exp_functions.find_attractor()
+				parameters = functions.find_attractor()
 				rasterization_entropy, fourier_transform_data = clear_and_draw(parameters)
 				parameter_change = True
 
@@ -132,17 +95,17 @@ while True:
 
 	# --- UI text instructions ---
 	message = 'PRESS R TO FIND NEW ATTRACTOR'
-	surface_left.blit(font.render(message, True, (255, 255, 255)), (32, 32))
+	surface_left.blit(PYGAME_FONT.render(message, True, (255, 255, 255)), (32, 32))
 	message = 'CLICK SLIDERS TO CHANGE PARAMETERS'
-	surface_left.blit(font.render(message, True, (255, 255, 255)), (32, 64))
+	surface_left.blit(PYGAME_FONT.render(message, True, (255, 255, 255)), (32, 64))
 	message = 'PRESS LEFT/RIGHT TO FINE-TUNE ACTIVE PARAMETER'
-	surface_left.blit(font.render(message, True, (255, 255, 255)), (32, 96))
+	surface_left.blit(PYGAME_FONT.render(message, True, (255, 255, 255)), (32, 96))
 	message = 'PRESS UP/DOWN TO CHANGE ACTIVE PARAMETER'
-	surface_left.blit(font.render(message, True, (255, 255, 255)), (32, 128))
+	surface_left.blit(PYGAME_FONT.render(message, True, (255, 255, 255)), (32, 128))
 
 	# Draw all sliders for current parameters
 	for slider_id in range(12):
-		draw_slider(parameters[slider_id], slider_id, active_slider_id)	
+		slider.draw_slider(surface_left, parameters[slider_id], slider_id, active_slider_id)	
 
 	# Display entropy and Fourier data (or divergence message)
 	if rasterization_entropy > 0:
@@ -152,7 +115,7 @@ while True:
 	else:
 		message = 'ORBIT DIVERGES'
 
-	msg_text = font.render(message, True, (255, 255, 255))
+	msg_text = PYGAME_FONT.render(message, True, (255, 255, 255))
 	surface_left.blit(msg_text, (32, 160 + (slider_id + 3) * 32))
 
 	# Combine control and visualization panels
