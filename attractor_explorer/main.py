@@ -15,6 +15,7 @@ pygame.display.set_caption('Iterated map explorer')
 clock = pygame.time.Clock()
 
 current_state = app_state.AppState()
+current_state.generate_new_attractor()
 
 # --- Main loop ---
 while True:
