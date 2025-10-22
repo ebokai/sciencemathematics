@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 from numba import njit, prange
 
 
-@njit()
-def reproduce_numba(bacteria_matrix, p_reproduce = 0.05, p_mutate = 0.01):
+@njit(parallel=True)
+def reproduce_numba(bacteria_matrix, p_reproduce = 0.002, p_mutate = 0.01):
 
-    for i in range(simulation_size):
-        for j in range(simulation_size):
+    for i in prange(simulation_size):
+        for j in prange(simulation_size):
             occupied = bacteria_matrix[i,j,0]
             mic = bacteria_matrix[i,j,1]
             n_mutations = bacteria_matrix[i,j,2]
@@ -27,7 +27,7 @@ def reproduce_numba(bacteria_matrix, p_reproduce = 0.05, p_mutate = 0.01):
                 bacteria_matrix[new_i, new_j, 0] = 1
 
                 if np.random.random() < p_mutate:
-                    mic *= np.random.uniform(1.5, 3.0)
+                    mic *= 10
                     n_mutations += 1
                     
                 bacteria_matrix[new_i, new_j, 1] = mic
@@ -92,14 +92,6 @@ iterations = 10000
 bacteria_matrix = initialize_bacteria(50)
 antibiotic_matrix = initialize_ab_matrix()
 
-print(np.sum(bacteria_matrix[:,:,0] > 0) )
-
-# bacteria_matrix = reproduce_numba(bacteria_matrix)
-# n_bacteria = sum(bacteria_matrix[:,:,0] > 0) 
-# print(f'time: {t}, number of bacteria: {n_bacteria}')
-# # ------------------
-
-            
 # --- SIMULATION ---
 for t in tqdm(range(iterations)):
     bacteria_matrix = reproduce_numba(bacteria_matrix)
@@ -107,15 +99,14 @@ for t in tqdm(range(iterations)):
     
 # ------------------
 
-i_list, j_list = np.where(bacteria_matrix[:,:,0] > 0)
-c_list = bacteria_matrix[i_list, j_list, 2]
+y, x = np.where(bacteria_matrix[:,:,0] > 0)
+colors = bacteria_matrix[y, x, 2]
 
 
 # --- PLOT ---
 plt.matshow(np.log10(antibiotic_matrix),fignum=0,cmap='gray_r')
 plt.colorbar(label='antibiotic concentration [log mg/L]')
-plt.scatter(j_list, i_list,
-    c=c_list, cmap='autumn', edgecolor='None', s = 10)
+plt.scatter(x, y, c=colors, cmap='autumn', edgecolor='None', s = 10)
 plt.colorbar(label = 'number of mutations')
 plt.show()
 # ------------------
