@@ -77,7 +77,7 @@ pairs, bacteria = initialize_bacteria(50)
 
             
 # --- SIMULATION ---
-for t in range(25000):
+for t in range(10000):
     bacteria, pairs = reproduce(bacteria, pairs)
     bacteria, pairs = kill(bacteria, pairs, antibiotic_matrix)
     if t % 500 == 0:
