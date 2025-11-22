@@ -1,8 +1,10 @@
-import matplotlib.pyplot as plt 
-import matplotlib.animation as anim 
-import numpy as np 
 import colorsys
-from matplotlib.collections import LineCollection 
+
+import matplotlib.animation as anim
+import matplotlib.pyplot as plt
+import numpy as np
+from matplotlib.collections import LineCollection
+
 
 # Function to compute a transformation on a complex number z
 # Parameters:
@@ -13,16 +15,19 @@ from matplotlib.collections import LineCollection
 def f(z, a, b, c, p):
     return np.sum(c * np.power(z, p)) * np.exp(1j * a * b)
 
+
 # Function to interpolate between two values a and b based on a parameter t and duration dt
 # This creates a smooth transition using a cosine function
 def morph(a, b, t, dt):
     return a + (b - a) * (1 + np.cos(2 * np.pi * t / dt)) / 2
 
+
 # Initialization function for the animation
 # This is called once at the beginning to set up the plot
 def init():
     lc.set_segments(lines)
-    return lc,
+    return (lc,)
+
 
 # Animation function, updates the lines for each frame
 # This is called repeatedly to update the plot
@@ -43,9 +48,17 @@ def animate(t):
     for i, a in enumerate(np.linspace(0, 2 * np.pi, n_lines)):
         line = []
         # Initial complex number z is a sum of rotational and radial components
-        z = np.sum([ro_t[j] * np.exp(1j * a) + r_t[j] * np.cos(i / n_lines * 2 * np.pi * ka_t[j] + pa_t[j]) * np.exp(1j * (a * kb_t[j] + pb_t[j])) for j in range(n_z)])
+        z = np.sum(
+            [
+                ro_t[j] * np.exp(1j * a)
+                + r_t[j]
+                * np.cos(i / n_lines * 2 * np.pi * ka_t[j] + pa_t[j])
+                * np.exp(1j * (a * kb_t[j] + pb_t[j]))
+                for j in range(n_z)
+            ]
+        )
         line.append((np.real(z), np.imag(z)))
-        
+
         # Apply the transformation function iteratively
         for j in range(n_parts):
             z = f(z, a, k[j], coeffs[j], powers[j])
@@ -54,7 +67,8 @@ def animate(t):
         lines.append(line)
 
     lc.set_segments(lines)  # Update the line collection with the new segments
-    return lc,
+    return (lc,)
+
 
 # Animation parameters
 dpi = 72
@@ -62,18 +76,20 @@ xres = 1024
 yres = 768
 
 # Set plot background color to black
-plt.rcParams['axes.facecolor'] = '#000000'  
-fig, ax = plt.subplots(figsize=(xres / dpi, yres / dpi), facecolor='k', dpi=dpi)
-ax.set_aspect('equal')
+plt.rcParams["axes.facecolor"] = "#000000"
+fig, ax = plt.subplots(figsize=(xres / dpi, yres / dpi), facecolor="k", dpi=dpi)
+ax.set_aspect("equal")
 
 # Number of lines and parts
 n_lines = 500  # Number of lines to draw
-n_parts = 2    # Number of parts in the transformation
-n_z = 2        # Number of initial complex numbers
+n_parts = 2  # Number of parts in the transformation
+n_z = 2  # Number of initial complex numbers
 
 # Generate random parameters for the transformation functions
 orders = np.random.randint(1, 4, n_parts)  # Polynomial orders for the transformation
-coeffs = [np.random.uniform(-1, 1, order + 1) for order in orders]  # Coefficients for the polynomials
+coeffs = [
+    np.random.uniform(-1, 1, order + 1) for order in orders
+]  # Coefficients for the polynomials
 powers = [np.arange(order + 1) for order in orders]  # Powers for the polynomials
 
 # Function parameters (interpolation targets)
@@ -104,8 +120,10 @@ pb = np.pi / 6 * np.random.randint(0, 2, (n_z, 2))  # Phase offsets
 d7 = np.random.randint(750, 7500, n_z)
 
 # List to hold the lines for plotting
-lines = []  
-colors = [colorsys.hsv_to_rgb(i / n_lines, 1, 1) for i in range(n_lines)]  # Generate colors for the lines
+lines = []
+colors = [
+    colorsys.hsv_to_rgb(i / n_lines, 1, 1) for i in range(n_lines)
+]  # Generate colors for the lines
 
 # Create a LineCollection object to hold the lines and add it to the axes
 lc = LineCollection(lines, alpha=0.45, lw=0.5, color=colors)

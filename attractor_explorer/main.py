@@ -1,17 +1,16 @@
-import pygame
-import numpy as np 
-
 import app_state
-import functions 
-import text
-import slider 
+import functions
 import iterator_naive
+import numpy as np
+import pygame
+import slider
+import text
 from config_vars import *
 
 # --- Pygame setup ---
 pygame.init()
 screen = pygame.display.set_mode((XRES, YRES))
-pygame.display.set_caption('Iterated map explorer')
+pygame.display.set_caption("Iterated map explorer")
 clock = pygame.time.Clock()
 
 current_state = app_state.AppState()
@@ -20,16 +19,16 @@ current_state.generate_new_attractor()
 # --- Main loop ---
 while True:
 
-	current_state.init_frame()
+    current_state.init_frame()
 
-	for event in pygame.event.get():
-		current_state.handle_event(event)
+    for event in pygame.event.get():
+        current_state.handle_event(event)
 
-	current_state.update_parameter()
-	current_state.draw_instructions()
-	current_state.draw_sliders()
-	current_state.draw_fourier_spectrum()
-	current_state.blit_surfaces(screen)
+    current_state.update_parameter()
+    current_state.draw_instructions()
+    current_state.draw_sliders()
+    current_state.draw_fourier_spectrum()
+    current_state.blit_surfaces(screen)
 
-	pygame.display.flip()
-	clock.tick(60)
+    pygame.display.flip()
+    clock.tick(60)
