@@ -1,6 +1,6 @@
 # Wheel and Bucket Simulation
 
-This project is an interactive **wheel-and-bucket physics simulation** implemented in Python using **Pygame** and **NumPy**. The simulation models a wheel with multiple buckets around its perimeter, where buckets can **fill and leak mass**, generating torque and affecting the wheel’s rotation.  
+This project is an interactive **wheel-and-bucket physics simulation** implemented in Python using **Pygame** and **NumPy**. The simulation models a wheel with multiple buckets around its perimeter, where buckets can **fill and leak mass**, generating torque and affecting the wheel’s rotation.
 
 This code is inspired by **Steven Strogatz's book _Nonlinear Dynamics and Chaos_**, specifically the chapter illustrating a **physical realization of the Lorenz system**. The trajectory drawn in the simulation corresponds to the **Lorenz attractor**, showing how chaotic dynamics can emerge from a mechanical system.
 
@@ -24,9 +24,9 @@ It provides real-time visualization of **angular velocity**, **torque**, **mass 
 
 ## Requirements
 
-- Python 3.10+  
-- Pygame  
-- NumPy  
+- Python 3.10+
+- Pygame
+- NumPy
 
 Install dependencies via pip:
 
@@ -90,4 +90,3 @@ python wheel_simulation.py
 ## License
 
 This project is open-source under the MIT License.
-

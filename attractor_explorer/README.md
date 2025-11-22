@@ -32,8 +32,8 @@ Where `pars = [a0, a1, a2, a3, a4, a5, b0, b1, b2, b3, b4, b5]` are the 12 adjus
 
 ## Requirements
 
-- Python 3.10+  
-- Pygame  
+- Python 3.10+
+- Pygame
 - NumPy
 - Numba
 
@@ -87,4 +87,3 @@ python main.py
 This project is open-source and available under the MIT License.
 
 ---
-
